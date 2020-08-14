@@ -33,7 +33,7 @@ def index():
 
 @app.route("/annotate")
 def annotate():
-    label = request.args.get("label")
+    label = int(request.args.get("label"))
     app.config["TASK"].annotate(app.config["CURRENT_SUBTASK_INDEX"], label)
     app.config["CURRENT_SUBTASK_INDEX"] += 1
     return ""
