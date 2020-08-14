@@ -19,7 +19,7 @@
     function httpGet(url) {
         const xmlHttp = new XMLHttpRequest();
         const asynchronous = false;
-        xmlHttp.open("GET", url, synchronous);
+        xmlHttp.open("GET", url, asynchronous);
         xmlHttp.send(null);
         return xmlHttp.responseText;
     }
