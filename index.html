@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annotator</title>
+</head>
+
+<body>
+    <img src="{{ left_image }}" alt="left image">
+    <img src="{{ right_image }}" alt="right image">
+</body>
+
+<script>
+    function httpGet(url) {
+        var xmlHttp = new XMLHttpRequest();
+        const synchronous = false;
+        xmlHttp.open("GET", url, synchronous);
+        xmlHttp.send(null);
+        return xmlHttp.responseText;
+    }
+
+    // TODO make more generic and load from config.json
+    window.addEventListener('keydown', e => {
+        switch (e.keyCode) {
+            case 37: httpGet("/annotate?label=0")
+                break;
+            case 39: httpGet("/annotate?label=1")
+                break;
+            case 40: httpGet("/annotate?label=2")
+                break;
+        }
+        location.reload()
+    });
+</script>
+
+</html>

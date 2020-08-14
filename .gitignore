@@ -132,3 +132,6 @@ dmypy.json
 tasks/
 pics/
 results/
+Pipfile.lock
+Pipfile
+.vscode/settings.json

@@ -1,0 +1,6 @@
+{
+    "image_dir": "pics/",
+    "task_dir": "tasks/",
+    "result_dir": "results/",
+    "image_format_string": "ILSVRC2012_test_{:08d}.zoom00.JPEG"
+}
