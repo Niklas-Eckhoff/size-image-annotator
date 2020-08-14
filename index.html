@@ -17,8 +17,8 @@
     var config = JSON.parse('{{ config | tojson | safe}}');
 
     function httpGet(url) {
-        var xmlHttp = new XMLHttpRequest();
-        const synchronous = false;
+        const xmlHttp = new XMLHttpRequest();
+        const asynchronous = false;
         xmlHttp.open("GET", url, synchronous);
         xmlHttp.send(null);
         return xmlHttp.responseText;
