@@ -127,7 +127,6 @@ def load_config():
         app.config["CONFIG_DICT"] = config
     app.config["TASK"] = prompt_for_task()
     app.config["CURRENT_SUBTASK_INDEX"] = get_last_unannotated_index()
-    print(app.config["CURRENT_SUBTASK_INDEX"])
 
 
 def main():
