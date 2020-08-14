@@ -8,11 +8,14 @@
 </head>
 
 <body>
+    <h1>{{ current_subtask_num }} of {{ task_length }}</h1>
     <img src="{{ left_image }}" alt="left image">
     <img src="{{ right_image }}" alt="right image">
 </body>
 
 <script>
+    var config = JSON.parse('{{ config | tojson | safe}}');
+
     function httpGet(url) {
         var xmlHttp = new XMLHttpRequest();
         const synchronous = false;
@@ -21,17 +24,15 @@
         return xmlHttp.responseText;
     }
 
-    // TODO make more generic and load from config.json
     window.addEventListener('keydown', e => {
         switch (e.keyCode) {
-            case 37: httpGet("/annotate?label=0")
+            case config.left_greater_keycode: httpGet("/annotate?label=0"); location.reload();
                 break;
-            case 39: httpGet("/annotate?label=1")
+            case config.right_greater_keycode: httpGet("/annotate?label=1"); location.reload();
                 break;
-            case 40: httpGet("/annotate?label=2")
+            case config.none_greater_keycode: httpGet("/annotate?label=2"); location.reload();
                 break;
         }
-        location.reload()
     });
 </script>
 

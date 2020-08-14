@@ -20,7 +20,14 @@ def index():
                 app.config["CURRENT_SUBTASK_INDEX"], -1)
             app.config["CURRENT_SUBTASK_INDEX"] += 1
             continue
-        return render_template("index.html", left_image=left_image_path, right_image=right_image_path)
+        return render_template(
+            "index.html",
+            current_subtask_num=app.config["CURRENT_SUBTASK_INDEX"] + 1,
+            task_length=len(app.config["TASK"].subtask_list),
+            left_image=left_image_path,
+            right_image=right_image_path,
+            config=app.config["CONFIG_DICT"]
+        )
     return "DONE"
 
 
@@ -29,7 +36,7 @@ def annotate():
     label = request.args.get("label")
     app.config["TASK"].annotate(app.config["CURRENT_SUBTASK_INDEX"], label)
     app.config["CURRENT_SUBTASK_INDEX"] += 1
-    return
+    return ""
 
 
 def id_to_filepath(id):
@@ -56,8 +63,12 @@ class Task:
 
     def annotate(self, index, label):
         if self.within_range(index):
-            self.timestamp = int(time())
+            self.subtask_list[index]["timestamp"] = int(time())
             self.subtask_list[index]["label"] = label
+            result_file = app.config["RESULT_DIR"] + \
+                self.task_name[:-5] + "_annotated.json"
+            with open(result_file, "w") as file:
+                json.dump(self.subtask_list, file)
 
     def within_range(self, index):
         return 0 <= index < len(self.subtask_list)
@@ -81,7 +92,7 @@ def prompt_for_task():
 
         if task_index < 0 or task_index >= len(task_names):
             print(
-                f"Please enter an intger between 1 and {len(task_names)}\n\n")
+                f"Please enter an integer between 1 and {len(task_names)}\n\n")
             continue
 
         task_name = task_names[task_index]
@@ -89,6 +100,19 @@ def prompt_for_task():
             subtask_list = json.load(task)
             task = Task(task_name, subtask_list)
             return task
+
+
+def get_last_unannotated_index():
+    annotated_file_path = app.config["RESULT_DIR"] + \
+        app.config["TASK"].task_name[:-5] + "_annotated.json"
+    if isfile(annotated_file_path):
+        with open(annotated_file_path) as annotated_file:
+            subtask_list = json.load(annotated_file)
+            for index, subtask in enumerate(subtask_list):
+                if subtask.get("label") is None:
+                    return index
+            return len(subtask_list)
+    return 0
 
 
 def load_config():
@@ -100,8 +124,10 @@ def load_config():
         app.config["TASK_DIR"] = format_dir(config.get("task_dir", ""))
         app.config["IMAGE_FORMAT_STRING"] = config.get(
             "image_format_string", "")
+        app.config["CONFIG_DICT"] = config
     app.config["TASK"] = prompt_for_task()
-    app.config["CURRENT_SUBTASK_INDEX"] = 0
+    app.config["CURRENT_SUBTASK_INDEX"] = get_last_unannotated_index()
+    print(app.config["CURRENT_SUBTASK_INDEX"])
 
 
 def main():
@@ -111,6 +137,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-# TODO save as json file in folder results
-# TODO load from last unannotated index
