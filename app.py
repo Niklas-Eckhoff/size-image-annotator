@@ -41,8 +41,13 @@ def annotate():
 
 @app.route("/back")
 def back():
-    if app.config["CURRENT_SUBTASK_INDEX"] > 0:
+    hit_first_manually_annotated = False
+    while app.config["CURRENT_SUBTASK_INDEX"] > 0 and not hit_first_manually_annotated:
         app.config["CURRENT_SUBTASK_INDEX"] -= 1
+        cur_subtask = app.config["TASK"].subtask_list[app.config["CURRENT_SUBTASK_INDEX"]]
+        cur_label = cur_subtask.get("label")
+        if cur_label != -1:
+            hit_first_manually_annotated = True
         app.config["TASK"].unannotate(app.config["CURRENT_SUBTASK_INDEX"])
     return ""
 
