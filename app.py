@@ -96,7 +96,12 @@ def prompt_for_task():
             continue
 
         task_name = task_names[task_index]
-        with open(app.config["TASK_DIR"] + task_name) as task:
+        unannotated_path = app.config["TASK_DIR"] + task_name
+        annotated_path = app.config["RESULT_DIR"] + \
+            task_name[:-5] + "_annotated.json"
+        task_path = annotated_path if isfile(
+            annotated_path) else unannotated_path
+        with open(task_path) as task:
             subtask_list = json.load(task)
             task = Task(task_name, subtask_list)
             return task
@@ -132,7 +137,6 @@ def load_config():
 
     app.config["TASK"] = prompt_for_task()
     app.config["CURRENT_SUBTASK_INDEX"] = get_last_unannotated_index()
-    print(app.config["CURRENT_SUBTASK_INDEX"])
 
 
 def main():
