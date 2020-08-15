@@ -1,5 +1,5 @@
 import json
-from os import listdir
+from os import listdir, makedirs
 from os.path import isfile, join
 from time import time
 
@@ -125,8 +125,14 @@ def load_config():
         app.config["IMAGE_FORMAT_STRING"] = config.get(
             "image_format_string", "")
         app.config["CONFIG_DICT"] = config
+
+        makedirs(app.config["IMAGE_DIR"], exist_ok=True)
+        makedirs(app.config["RESULT_DIR"], exist_ok=True)
+        makedirs(app.config["TASK_DIR"], exist_ok=True)
+
     app.config["TASK"] = prompt_for_task()
     app.config["CURRENT_SUBTASK_INDEX"] = get_last_unannotated_index()
+    print(app.config["CURRENT_SUBTASK_INDEX"])
 
 
 def main():
