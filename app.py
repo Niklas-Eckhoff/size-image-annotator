@@ -39,6 +39,14 @@ def annotate():
     return ""
 
 
+@app.route("/back")
+def back():
+    if app.config["CURRENT_SUBTASK_INDEX"] > 0:
+        app.config["CURRENT_SUBTASK_INDEX"] -= 1
+        app.config["TASK"].unannotate(app.config["CURRENT_SUBTASK_INDEX"])
+    return ""
+
+
 def id_to_filepath(id):
     return app.config["IMAGE_DIR"] + app.config["IMAGE_FORMAT_STRING"].format(id)
 
@@ -65,6 +73,15 @@ class Task:
         if self.within_range(index):
             self.subtask_list[index]["timestamp"] = int(time())
             self.subtask_list[index]["label"] = label
+            result_file = app.config["RESULT_DIR"] + \
+                self.task_name[:-5] + "_annotated.json"
+            with open(result_file, "w") as file:
+                json.dump(self.subtask_list, file)
+
+    def unannotate(self, index):
+        if self.within_range(index):
+            del self.subtask_list[index]["timestamp"]
+            del self.subtask_list[index]["label"]
             result_file = app.config["RESULT_DIR"] + \
                 self.task_name[:-5] + "_annotated.json"
             with open(result_file, "w") as file:
