@@ -6,17 +6,20 @@ import networkx as nx
 
 def edge_list(data_as_list_of_dicts):
     edge_list = []
+    invalid_tracker = set()
     for datapoint in data_as_list_of_dicts:
         label = datapoint.get("label")
         left = datapoint.get("left")
         right = datapoint.get("right")
-        if label is None or label == -1 or label == 2 or left == right:
+        is_duplicate_of_invalid = (left, right) in invalid_tracker or (
+            right, left) in invalid_tracker
+        if label is None or label == -1 or label == 2 or left == right or is_duplicate_of_invalid:
+            invalid_tracker.add((left, right))
             continue
+        if label == 0:
+            edge_list.append((left, right))
         elif label == 1:
-            helper = left
-            left = right
-            right = helper
-        edge_list.append((left, right))
+            edge_list.append((right, left))
     return edge_list
 
 
