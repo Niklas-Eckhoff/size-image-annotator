@@ -11,10 +11,9 @@ def edge_list(data_as_list_of_dicts):
         label = datapoint.get("label")
         left = datapoint.get("left")
         right = datapoint.get("right")
-        is_duplicate_of_invalid = (left, right) in invalid_tracker or (
-            right, left) in invalid_tracker
+        is_duplicate_of_invalid = {left, right} in invalid_tracker
         if label is None or label == -1 or label == 2 or left == right or is_duplicate_of_invalid:
-            invalid_tracker.add((left, right))
+            invalid_tracker.add(frozenset({left, right}))
             continue
         if label == 0:
             edge_list.append((left, right))
