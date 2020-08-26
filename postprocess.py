@@ -14,7 +14,7 @@ def make_graph(data_as_list_of_dicts):
             invalid_tracker.add(frozenset({left, right}))
 
     graph = nx.DiGraph()
-    for i, datapoint in enumerate(data_as_list_of_dicts):
+    for datapoint in data_as_list_of_dicts:
         label = datapoint.get("label")
         left = datapoint.get("left")
         right = datapoint.get("right")
@@ -58,8 +58,6 @@ while not nx.is_directed_acyclic_graph(graph):
     graph.remove_edges_from(cycle)
 
 num_edges_without_ambiguous_and_cycles = graph.number_of_edges()
-print(num_edges_without_ambiguous_and_cycles)
-print(graph.number_of_edges())
 
 print("\n#edges total:", num_edges_total)
 print("#edges without ambiguous:", num_edges_without_ambiguous)
